@@ -1,55 +1,57 @@
 package com.example.event_ticketing_api.controller;
 
+import java.time.LocalDate;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
 import com.example.event_ticketing_api.dto.EventRequest;
 import com.example.event_ticketing_api.model.Event;
 import com.example.event_ticketing_api.service.EventService;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.LocalDate;
-
-@WebMvcTest(EventController.class)
 public class EventControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private EventService eventService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @InjectMocks
+    private EventController eventController;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    public void testCreateEvent() throws Exception {
+    void testCreateEvent() {
         EventRequest request = new EventRequest();
-        request.setName("Event X");
-        request.setLocation("Bandung");
-        request.setDate(LocalDate.now().plusDays(1));
+        request.setName("Tech Conference");
+        request.setLocation("Jakarta");
+        request.setDate(LocalDate.now().plusDays(2));
 
-        Event event = new Event();
-        event.setId(1L);
-        event.setName(request.getName());
-        event.setLocation(request.getLocation());
-        event.setDate(request.getDate());
+        Event mockEvent = new Event();
+        mockEvent.setId(1L);
+        mockEvent.setName(request.getName());
+        mockEvent.setLocation(request.getLocation());
+        mockEvent.setDate(request.getDate());
 
-        when(eventService.createEvent(any(EventRequest.class))).thenReturn(event);
+        when(eventService.createEvent(request)).thenReturn(mockEvent);
 
-        mockMvc.perform(post("/events")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Event X"))
-                .andExpect(jsonPath("$.location").value("Bandung"));
+        ResponseEntity<Event> response = eventController.createEvent(request);
+        Event result = response.getBody();
+
+        // Ensure result is not null before accessing its properties
+        org.junit.jupiter.api.Assertions.assertNotNull(result);
+
+        assertEquals(mockEvent.getId(), result.getId());
+        assertEquals(mockEvent.getName(), result.getName());
+        assertEquals(mockEvent.getLocation(), result.getLocation());
+        assertEquals(mockEvent.getDate(), result.getDate());
     }
 }

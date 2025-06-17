@@ -3,6 +3,7 @@ package com.example.event_ticketing_api.service;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
@@ -16,7 +17,7 @@ import com.example.event_ticketing_api.dto.EventRequest;
 import com.example.event_ticketing_api.model.Event;
 import com.example.event_ticketing_api.repository.EventRepository;
 
-public class EventServiceTest {
+class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
@@ -24,7 +25,8 @@ public class EventServiceTest {
     @InjectMocks
     private EventService eventService;
 
-    public EventServiceTest() {
+    @BeforeEach
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
@@ -33,15 +35,15 @@ public class EventServiceTest {
         EventRequest request = new EventRequest();
         request.setName("Test Event");
         request.setLocation("Jakarta");
-        request.setDate(LocalDate.now().plusDays(2));
+        request.setDate(LocalDate.now().plusDays(1));
 
-        Event savedEvent = new Event();
-        savedEvent.setId(1L);
-        savedEvent.setName(request.getName());
-        savedEvent.setLocation(request.getLocation());
-        savedEvent.setDate(request.getDate());
+        Event expected = new Event();
+        expected.setId(1L);
+        expected.setName(request.getName());
+        expected.setLocation(request.getLocation());
+        expected.setDate(request.getDate());
 
-        when(eventRepository.save(any(Event.class))).thenReturn(savedEvent);
+        when(eventRepository.save(any(Event.class))).thenReturn(expected);
 
         Event result = eventService.createEvent(request);
 

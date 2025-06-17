@@ -22,7 +22,8 @@ public class TicketServiceTest {
     @InjectMocks
     private TicketService ticketService;
 
-    public TicketServiceTest() {
+    @org.junit.jupiter.api.BeforeEach
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 

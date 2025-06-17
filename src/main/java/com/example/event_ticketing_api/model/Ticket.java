@@ -39,7 +39,8 @@ public class Ticket {
         this.eventId = eventId;
     }
 
-    public void setId(long l) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    public void setId(Long id) {
+        this.id = id;
     }
 }

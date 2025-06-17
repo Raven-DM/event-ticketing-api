@@ -29,6 +29,10 @@ public class Event {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public String getName() {
         return name;
     }
@@ -53,7 +57,4 @@ public class Event {
         this.date = date;
     }
 
-    public void setId(long l) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }
